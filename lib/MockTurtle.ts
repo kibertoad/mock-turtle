@@ -1,4 +1,10 @@
-import nockNamespace, { HttpHeaders, POJO, ReplyBody } from 'nock'
+import nockNamespace, {
+  HttpHeaders,
+  POJO,
+  ReplyBody,
+  ReplyCallbackResult,
+  RequestBodyMatcher
+} from 'nock'
 import { Url } from 'url'
 import deepMerge from 'deepmerge'
 
@@ -10,9 +16,12 @@ export interface GlobalOptions {
 }
 
 export interface EndpointOptions {
+  anyParams?: boolean
   requestQuery?: nockNamespace.RequestBodyMatcher
   requestBody?: nockNamespace.RequestBodyMatcher
 }
+
+export type ResponseFunction = (path: string, requestBody: POJO) => ReplyCallbackResult
 
 export type EndpointResponse =
   | {
@@ -21,6 +30,7 @@ export type EndpointResponse =
       headers?: HttpHeaders
     }
   | POJO
+  | ResponseFunction
 
 enum HttpMethod {
   get = 'get',
@@ -98,42 +108,79 @@ export class MockTurtle {
       optionOverrides || {}
     )
     const resolvedEndpointOptions: EndpointOptions = endpointOptions || {}
-    const resolvedReply: EndpointResponse = endpointReply
-      ? resolveResponse(endpointReply)
-      : {
-          responseCode: 200
-        }
 
-    if (
-      !resolvedGlobalOptions.allowProtocolOmission &&
-      typeof resolvedGlobalOptions.basePath === 'string' &&
-      !resolvedGlobalOptions.basePath.startsWith('http')
-    ) {
-      throw new Error(
-        `Please add "http://" or "https://" to your baseUrl, otherwise mocking is unlikely to work. If you are pretty sure you don't need it, set "allowProtocolOmission" to true.`
-      )
+    validateOptions(resolvedGlobalOptions, resolvedEndpointOptions)
+    let bodyParam: RequestBodyMatcher | undefined
+    if (resolvedEndpointOptions.requestBody) {
+      bodyParam = resolvedEndpointOptions.requestBody
+    }
+    if (resolvedEndpointOptions.anyParams) {
+      bodyParam = () => true
     }
 
     const mockBuilder = this.nock(
       resolvedGlobalOptions.basePath,
       resolvedGlobalOptions.nockOptions
-    )[method](endpointPath, resolvedEndpointOptions.requestBody)
+    )[method](endpointPath, bodyParam)
 
     if (resolvedEndpointOptions.requestQuery) {
       mockBuilder.query(resolvedEndpointOptions.requestQuery)
+    }
+    if (resolvedEndpointOptions.anyParams) {
+      mockBuilder.query(() => true)
     }
 
     if (resolvedGlobalOptions.delayConnection) {
       mockBuilder.delayConnection(resolvedGlobalOptions.delayConnection)
     }
 
-    mockBuilder.reply(resolvedReply.responseCode, resolvedReply.body, resolvedReply.headers)
-
+    setReply(mockBuilder, endpointReply)
     return mockBuilder
   }
 }
 
-function resolveResponse(response: POJO): EndpointResponse {
+function validateOptions(
+  resolvedGlobalOptions: GlobalOptions,
+  resolvedEndpointOptions: EndpointOptions
+) {
+  if (
+    !resolvedGlobalOptions.allowProtocolOmission &&
+    typeof resolvedGlobalOptions.basePath === 'string' &&
+    !resolvedGlobalOptions.basePath.startsWith('http')
+  ) {
+    throw new Error(
+      `Please add "http://" or "https://" to your baseUrl, otherwise mocking is unlikely to work. If you are pretty sure you don't need it, set "allowProtocolOmission" to true.`
+    )
+  }
+
+  if (
+    resolvedEndpointOptions.anyParams &&
+    (resolvedEndpointOptions.requestBody || resolvedEndpointOptions.requestQuery)
+  ) {
+    throw new Error(
+      'When "anyParams" flag is set to true, no "requestBody" or "requestQuery" can be set.'
+    )
+  }
+}
+
+function setReply(mockBuilder: nockNamespace.Interceptor, endpointReply?: EndpointResponse) {
+  // Handle reply callback function
+  if (typeof endpointReply === 'function') {
+    mockBuilder.reply(endpointReply as any)
+    return
+  }
+
+  // Handle static reply
+  const resolvedReply: EndpointResponse = endpointReply
+    ? resolveStaticResponse(endpointReply)
+    : {
+        responseCode: 200
+      }
+
+  mockBuilder.reply(resolvedReply.responseCode, resolvedReply.body, resolvedReply.headers)
+}
+
+function resolveStaticResponse(response: POJO): EndpointResponse {
   if (response.responseCode) {
     return response
   }
