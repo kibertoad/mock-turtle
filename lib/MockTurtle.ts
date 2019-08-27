@@ -59,7 +59,7 @@ export class MockTurtle {
     endpointPath: string | RegExp | ((uri: string) => boolean),
     mockedResponse?: EndpointResponse,
     endpointOptions?: EndpointOptions,
-    optionOverrides?: GlobalOptions
+    optionOverrides?: Partial<GlobalOptions>
   ): nockNamespace.Interceptor {
     return this.mockEndpoint(
       HttpMethod.get,
@@ -74,7 +74,7 @@ export class MockTurtle {
     endpointPath: string | RegExp | ((uri: string) => boolean),
     mockedResponse?: EndpointResponse,
     endpointOptions?: EndpointOptions,
-    optionOverrides?: GlobalOptions
+    optionOverrides?: Partial<GlobalOptions>
   ): nockNamespace.Interceptor {
     return this.mockEndpoint(
       HttpMethod.post,
@@ -102,7 +102,7 @@ export class MockTurtle {
     endpointPath: string | RegExp | ((uri: string) => boolean),
     endpointOptions?: EndpointOptions,
     mockedResponse?: EndpointResponse,
-    optionOverrides?: GlobalOptions
+    optionOverrides?: Partial<GlobalOptions>
   ): nockNamespace.Interceptor {
     endpointPath = endpointPath || '/'
 
