@@ -10,6 +10,8 @@ import deepMerge from 'deepmerge'
 
 export interface GlobalOptions {
   basePath: string | RegExp | Url
+  delayConnection?: number
+  times?: number
   nockOptions?: nockNamespace.Options
   allowProtocolOmission?: boolean
 }
@@ -18,8 +20,6 @@ export interface EndpointOptions {
   anyParams?: boolean
   requestQuery?: nockNamespace.RequestBodyMatcher
   requestBody?: nockNamespace.RequestBodyMatcher
-  delayConnection?: number
-  times?: number
   errorMessage?: string | POJO
 }
 
@@ -133,12 +133,12 @@ export class MockTurtle {
       mockBuilder.query(() => true)
     }
 
-    if (resolvedEndpointOptions.delayConnection) {
-      mockBuilder.delayConnection(resolvedEndpointOptions.delayConnection)
+    if (resolvedGlobalOptions.delayConnection) {
+      mockBuilder.delayConnection(resolvedGlobalOptions.delayConnection)
     }
 
-    if (resolvedEndpointOptions.times) {
-      mockBuilder.times(resolvedEndpointOptions.times)
+    if (resolvedGlobalOptions.times) {
+      mockBuilder.times(resolvedGlobalOptions.times)
     }
 
     if (resolvedEndpointOptions.errorMessage) {
