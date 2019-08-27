@@ -44,7 +44,7 @@ type Nock = (
 
 export class MockTurtle {
   private readonly nock: Nock
-  private optionDefaults: Partial<GlobalOptions>
+  private readonly optionDefaults: Partial<GlobalOptions>
 
   public constructor(nock: Nock, optionDefaults?: GlobalOptions) {
     this.nock = nock
@@ -103,6 +103,8 @@ export class MockTurtle {
     endpointReply?: EndpointResponse,
     optionOverrides?: GlobalOptions
   ): nockNamespace.Interceptor {
+    endpointPath = endpointPath || '/'
+
     const resolvedGlobalOptions: GlobalOptions = deepMerge(
       this.optionDefaults,
       optionOverrides || {}
