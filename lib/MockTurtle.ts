@@ -9,7 +9,7 @@ import { Url } from 'url'
 import deepMerge from 'deepmerge'
 
 export interface GlobalOptions {
-  basePath: string | RegExp | Url
+  host: string | RegExp | Url
   delayConnection?: number
   times?: number
   nockOptions?: nockNamespace.Options
@@ -20,7 +20,6 @@ export interface EndpointOptions {
   anyParams?: boolean
   requestQuery?: nockNamespace.RequestBodyMatcher
   requestBody?: nockNamespace.RequestBodyMatcher
-  errorMessage?: string | POJO
 }
 
 export type ResponseFunction = (path: string, requestBody: POJO) => ReplyCallbackResult
@@ -30,6 +29,7 @@ export type EndpointResponse =
       responseCode: number
       body?: ReplyBody
       headers?: HttpHeaders
+      errorMessage?: string | POJO
     }
   | POJO
   | ResponseFunction
@@ -39,10 +39,7 @@ enum HttpMethod {
   post = 'post'
 }
 
-type Nock = (
-  basePath: string | RegExp | Url,
-  options?: nockNamespace.Options
-) => nockNamespace.Scope
+type Nock = (host: string | RegExp | Url, options?: nockNamespace.Options) => nockNamespace.Scope
 
 export class MockTurtle {
   private readonly nock: Nock
@@ -121,10 +118,9 @@ export class MockTurtle {
       bodyParam = () => true
     }
 
-    const mockBuilder = this.nock(
-      resolvedGlobalOptions.basePath,
-      resolvedGlobalOptions.nockOptions
-    )[method](endpointPath, bodyParam)
+    const mockBuilder = this.nock(resolvedGlobalOptions.host, resolvedGlobalOptions.nockOptions)[
+      method
+    ](endpointPath, bodyParam)
 
     if (resolvedEndpointOptions.requestQuery) {
       mockBuilder.query(resolvedEndpointOptions.requestQuery)
@@ -141,8 +137,10 @@ export class MockTurtle {
       mockBuilder.times(resolvedGlobalOptions.times)
     }
 
-    if (resolvedEndpointOptions.errorMessage) {
-      mockBuilder.replyWithError(resolvedEndpointOptions.errorMessage)
+    // @ts-ignore
+    if (mockedResponse && mockedResponse.errorMessage) {
+      // @ts-ignore
+      mockBuilder.replyWithError(mockedResponse.errorMessage)
     }
 
     setReply(mockBuilder, mockedResponse)
@@ -156,11 +154,11 @@ function validateOptions(
 ) {
   if (
     !resolvedGlobalOptions.allowProtocolOmission &&
-    typeof resolvedGlobalOptions.basePath === 'string' &&
-    !resolvedGlobalOptions.basePath.startsWith('http')
+    typeof resolvedGlobalOptions.host === 'string' &&
+    !resolvedGlobalOptions.host.startsWith('http')
   ) {
     throw new Error(
-      `Please add "http://" or "https://" to your baseUrl, otherwise mocking is unlikely to work. If you are pretty sure you don't need it, set "allowProtocolOmission" to true.`
+      `Please add "http://" or "https://" to your host, otherwise mocking is unlikely to work. If you are pretty sure you don't need it, set "allowProtocolOmission" to true.`
     )
   }
 

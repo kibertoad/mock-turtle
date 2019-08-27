@@ -25,7 +25,7 @@ describe('TestSuite', () => {
   let mockTurtle: MockTurtle
   beforeEach(() => {
     mockTurtle = new MockTurtle(nock, {
-      basePath: 'http://www.google.com'
+      host: 'http://www.google.com'
     })
     mockTurtle.disableExternalCalls()
   })
@@ -90,8 +90,9 @@ MockTurtle constructor accepts following parameters:
 
 GlobalOptions parameters:
 
-* basePath: string | RegExp | Url -> base path to service being mocked. It may be convenient to use single instance of MockTurtle to mock all endpoints of a single external service.
+* host: string | RegExp | Url -> host path to service being mocked. It may be convenient to use single instance of MockTurtle to mock all endpoints of a single external service.
 * delayConnection?: number -> delay in returning response to mocked endpoint
+* times?: number -> how many times should same response be repeated. By default mock is reused indefinitely
 * nockOptions?: nock.Options -> options that will be passed to nock instance directly
 * allowProtocolOmission?: boolean -> do not throw an error when mocked path does not begin with 'http' (which usually results in mocking not working)
 
@@ -99,7 +100,7 @@ All these parameters can also be overriden for each mock separately
 
 To mock an endpoint, use `mockGet` or `mockPost` methods on MockTurtle instance accordingly. Parameters for these methods:
 
-* endpointPath: string | RegExp | ((uri: string) => boolean) -> endpoint url. Gets concatenated with MockTurtle `basePath`
+* endpointPath: string | RegExp | ((uri: string) => boolean) -> endpoint url. Gets concatenated with MockTurtle `host`
 * mockedResponse?: EndpointResponse, -> mocked response that will be returned by the mocked endpoint
 * endpointOptions?: EndpointOptions, -> filters to apply when matching call to endpoint with specific mocks
 * optionOverrides?: GlobalOptions -> overrides for MockTurtle options
