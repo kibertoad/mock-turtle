@@ -6,7 +6,7 @@ describe('mockTurtle', () => {
   let mockTurtle: MockTurtle
   beforeEach(() => {
     mockTurtle = new MockTurtle(nock, {
-      basePath: 'http://www.google.com'
+      host: 'http://www.google.com'
     })
     mockTurtle.disableExternalCalls()
   })

@@ -14,6 +14,7 @@ export interface GlobalOptions {
   times?: number
   nockOptions?: nockNamespace.Options
   allowProtocolOmission?: boolean
+  allowSlashOmission?: boolean
 }
 
 export interface EndpointOptions {
@@ -109,7 +110,7 @@ export class MockTurtle {
     )
     const resolvedEndpointOptions: EndpointOptions = endpointOptions || {}
 
-    validateOptions(resolvedGlobalOptions, resolvedEndpointOptions)
+    validateOptions(resolvedGlobalOptions, resolvedEndpointOptions, endpointPath)
     let bodyParam: RequestBodyMatcher | undefined
     if (resolvedEndpointOptions.requestBody) {
       bodyParam = resolvedEndpointOptions.requestBody
@@ -150,7 +151,8 @@ export class MockTurtle {
 
 function validateOptions(
   resolvedGlobalOptions: GlobalOptions,
-  resolvedEndpointOptions: EndpointOptions
+  resolvedEndpointOptions: EndpointOptions,
+  endpointPath: string | RegExp | ((uri: string) => boolean)
 ) {
   if (
     !resolvedGlobalOptions.allowProtocolOmission &&
@@ -159,6 +161,16 @@ function validateOptions(
   ) {
     throw new Error(
       `Please add "http://" or "https://" to your host, otherwise mocking is unlikely to work. If you are pretty sure you don't need it, set "allowProtocolOmission" to true.`
+    )
+  }
+
+  if (
+    !resolvedGlobalOptions.allowSlashOmission &&
+    typeof endpointPath === 'string' &&
+    !endpointPath.startsWith('/')
+  ) {
+    throw new Error(
+      `Please add "/" to your endpoint path, otherwise mocking is unlikely to work. If you are pretty sure you don't need it, set "allowSlashOmission" to true.`
     )
   }
 

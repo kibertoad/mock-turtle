@@ -94,7 +94,8 @@ GlobalOptions parameters:
 * delayConnection?: number -> delay in returning response to mocked endpoint
 * times?: number -> how many times should same response be repeated. By default mock is reused indefinitely
 * nockOptions?: nock.Options -> options that will be passed to nock instance directly
-* allowProtocolOmission?: boolean -> do not throw an error when mocked path does not begin with 'http' (which usually results in mocking not working)
+* allowProtocolOmission?: boolean -> do not throw an error when mocked host does not begin with 'http' (which usually results in mocking not working)
+* allowSlashOmission?: boolean -> do not throw an error when mocked path does not begin with '/' (which usually results in mocking not working)
 
 All these parameters can also be overriden for each mock separately
 
