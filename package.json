@@ -58,10 +58,10 @@
       }
     }
   },
-  "homepage": "http://github.com/kibertoad/mock-turtle",
+  "homepage": "http://github.com/kibertoad/mock-turtle-soup",
   "repository": {
     "type": "git",
-    "url": "git://github.com/kibertoad/mock-turtle.git"
+    "url": "git://github.com/kibertoad/mock-turtle-soup.git"
   },
   "keywords": [
     "nock",
