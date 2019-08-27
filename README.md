@@ -13,7 +13,9 @@ $ npm install --save-dev mock-turtle
 
 ## Example usage
 
-### Basic usage
+### Mocking
+
+#### Basic mocking usage
 
 ```
 import { MockTurtle } from 'mock-turtle'
@@ -79,7 +81,7 @@ describe('TestSuite', () => {
 
 ```
 
-## Configuration
+#### Mocking configuration
 
 MockTurtle constructor accepts following parameters:
 
@@ -107,6 +109,33 @@ EndpointOptions parameters:
 * anyParams?: boolean -> if true, any call to specified endpoint will match this mock. 
 * requestQuery?: nockNamespace.RequestBodyMatcher -> only matches mock for requests with given query parameters
 * requestBody?: nockNamespace.RequestBodyMatcher -> only matches mock for requests with given body
+
+### Response mock generation
+
+#### Basic mock generation usage
+
+```
+import { ResponseTypescriptExporter } from 'mock-turtle'
+
+const exporter = new ResponseTypescriptExporter(__dirname + '/nock-responses')
+
+describe('ResponseExporter', () => {
+  it('Export only response body', async () => {
+    const response = await request.get('https://jsonplaceholder.typicode.com/todos/1').set({
+      'Accept-Encoding': 'identity' // This will prevent responses from being compressed which is preferred for mock recording
+      })
+    await exporter.exportResponseBody('todoMock', response)
+    })
+
+  it('Export full response with headers and status code', async () => {
+    const response = await request.get('https://jsonplaceholder.typicode.com/todos/1').set({
+      'Accept-Encoding': 'identity' // This will prevent responses from being compressed which is preferred for mock recording
+      })
+    await exporter.exportFullResponse('todoFullMock', response)
+    })
+  })
+})
+```
 
 [npm-image]: https://img.shields.io/npm/v/mock-turtle.svg
 [npm-url]: https://npmjs.org/package/mock-turtle
