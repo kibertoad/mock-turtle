@@ -11,6 +11,103 @@ Wrapper for mocking external services with Nock.
 $ npm install --save-dev mock-turtle
 ```
 
+## Example usage
+
+### Basic usage
+
+```
+import { MockTurtle } from 'mock-turtle'
+import nock from 'nock'
+
+describe('TestSuite', () => {
+  let mockTurtle: MockTurtle
+  beforeEach(() => {
+    mockTurtle = new MockTurtle(nock, {
+      basePath: 'http://www.google.com'
+    })
+    mockTurtle.disableExternalCalls()
+  })
+  afterEach(() => {
+    mockTurtle.reset()
+  })
+
+  it('mock GET endpoint without parameters', async () => {
+    mockTurtle.mockGet('/', { result: 'Soup is ready.' })
+    const response = await request.get('www.google.com')
+    expect(response.body).toEqual({ result: 'Soup is ready.' })
+  })
+
+  it('mock GET endpoint for any parameters', async () => {
+    mockTurtle.mockGet('/', { result: 'Some soup is ready.' }, { anyParams: true })
+    const response = await request.get('www.google.com').query({
+      soupColour: 'red'
+    })
+    expect(response.body).toEqual({ result: 'Some soup is ready.' })
+  })
+
+    it('mock GET endpoint with parameters', async () => {
+      mockTurtle.mockGet(
+        '/',
+        { result: 'Red soup is ready.' },
+        {
+          requestQuery: {
+            soupColour: 'red'
+          }
+        }
+      )
+
+      mockTurtle.mockGet(
+        '/',
+        { result: 'Green soup is ready.' },
+        {
+          requestQuery: {
+            soupColour: 'green'
+          }
+        }
+      )
+
+      const responseRed = await request.get('www.google.com').query({
+        soupColour: 'red'
+      })
+      expect(responseRed.body).toEqual({ result: 'Red soup is ready.' })
+
+      const responseGreen = await request.get('www.google.com').query({
+        soupColour: 'green'
+      })
+      expect(responseGreen.body).toEqual({ result: 'Green soup is ready.' })
+    })
+
+```
+
+## Configuration
+
+MockTurtle constructor accepts following parameters:
+
+* nock -> instance of nock. Usually retrieved by calling `import * as nock from 'nock'` or `'const nock = require('nock)'`
+* optionDefaults?: GlobalOptions -> optional helper configuration
+
+GlobalOptions parameters:
+
+* basePath: string | RegExp | Url -> base path to service being mocked. It may be convenient to use single instance of MockTurtle to mock all endpoints of a single external service.
+* delayConnection?: number -> delay in returning response to mocked endpoint
+* nockOptions?: nock.Options -> options that will be passed to nock instance directly
+* allowProtocolOmission?: boolean -> do not throw an error when mocked path does not begin with 'http' (which usually results in mocking not working)
+
+All these parameters can also be overriden for each mock separately
+
+To mock an endpoint, use `mockGet` or `mockPost` methods on MockTurtle instance accordingly. Parameters for these methods:
+
+* endpointPath: string | RegExp | ((uri: string) => boolean) -> endpoint url. Gets concatenated with MockTurtle `basePath`
+* mockedResponse?: EndpointResponse, -> mocked response that will be returned by the mocked endpoint
+* endpointOptions?: EndpointOptions, -> filters to apply when matching call to endpoint with specific mocks
+* optionOverrides?: GlobalOptions -> overrides for MockTurtle options
+
+EndpointOptions parameters:
+
+* anyParams?: boolean -> if true, any call to specified endpoint will match this mock. 
+* requestQuery?: nockNamespace.RequestBodyMatcher -> only matches mock for requests with given query parameters
+* requestBody?: nockNamespace.RequestBodyMatcher -> only matches mock for requests with given body
+
 [npm-image]: https://img.shields.io/npm/v/mock-turtle.svg
 [npm-url]: https://npmjs.org/package/mock-turtle
 [downloads-image]: https://img.shields.io/npm/dm/mock-turtle.svg

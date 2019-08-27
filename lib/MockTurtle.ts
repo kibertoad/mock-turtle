@@ -56,7 +56,7 @@ export class MockTurtle {
 
   public mockGet(
     endpointPath: string | RegExp | ((uri: string) => boolean),
-    endpointReply?: EndpointResponse,
+    mockedResponse?: EndpointResponse,
     endpointOptions?: EndpointOptions,
     optionOverrides?: GlobalOptions
   ) {
@@ -64,14 +64,14 @@ export class MockTurtle {
       HttpMethod.get,
       endpointPath,
       endpointOptions,
-      endpointReply,
+      mockedResponse,
       optionOverrides
     )
   }
 
   public mockPost(
     endpointPath: string | RegExp | ((uri: string) => boolean),
-    endpointReply?: EndpointResponse,
+    mockedResponse?: EndpointResponse,
     endpointOptions?: EndpointOptions,
     optionOverrides?: GlobalOptions
   ) {
@@ -79,7 +79,7 @@ export class MockTurtle {
       HttpMethod.post,
       endpointPath,
       endpointOptions,
-      endpointReply,
+      mockedResponse,
       optionOverrides
     )
   }
@@ -100,7 +100,7 @@ export class MockTurtle {
     method: HttpMethod,
     endpointPath: string | RegExp | ((uri: string) => boolean),
     endpointOptions?: EndpointOptions,
-    endpointReply?: EndpointResponse,
+    mockedResponse?: EndpointResponse,
     optionOverrides?: GlobalOptions
   ): nockNamespace.Interceptor {
     endpointPath = endpointPath || '/'
@@ -136,7 +136,7 @@ export class MockTurtle {
       mockBuilder.delayConnection(resolvedGlobalOptions.delayConnection)
     }
 
-    setReply(mockBuilder, endpointReply)
+    setReply(mockBuilder, mockedResponse)
     return mockBuilder
   }
 }
