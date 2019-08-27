@@ -1,0 +1,81 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ResponseExporter Export to TypeScript Does not overwrite mocks by default 1`] = `
+Object {
+  "ResponseMock": Object {
+    "completed": false,
+    "id": 1,
+    "title": "delectus aut autem",
+    "userId": 1,
+  },
+}
+`;
+
+exports[`ResponseExporter Export to TypeScript Does not overwrite mocks by default 2`] = `
+Object {
+  "ResponseMock": Object {
+    "completed": false,
+    "id": 1,
+    "title": "delectus aut autem",
+    "userId": 1,
+  },
+}
+`;
+
+exports[`ResponseExporter Export to TypeScript Export full response 1`] = `
+Object {
+  "ResponseMock": Object {
+    "body": Object {
+      "completed": false,
+      "id": 1,
+      "title": "delectus aut autem",
+      "userId": 1,
+    },
+    "headers": Object {
+      "accept-ranges": "bytes",
+      "access-control-allow-credentials": "true",
+      "age": "4207",
+      "cache-control": "public, max-age=14400",
+      "cf-cache-status": "HIT",
+      "cf-ray": "50ce2884ef319c3f-AMS",
+      "connection": "close",
+      "content-length": "83",
+      "content-type": "application/json; charset=utf-8",
+      "date": "Tue, 27 Aug 2019 12:48:11 GMT",
+      "etag": "W/\\"53-hfEnumeNh6YirfjyjaujcOPPT+s\\"",
+      "expect-ct": "max-age=604800, report-uri=\\"https://report-uri.cloudflare.com/cdn-cgi/beacon/expect-ct\\"",
+      "expires": "Tue, 27 Aug 2019 16:48:11 GMT",
+      "pragma": "no-cache",
+      "server": "cloudflare",
+      "set-cookie": "__cfduid=d6bfb4cafb2fadd8a6ab89a6195a1a61c1566910091; expires=Wed, 26-Aug-20 12:48:11 GMT; path=/; domain=.typicode.com; HttpOnly",
+      "vary": "Origin, Accept-Encoding",
+      "via": "1.1 vegur",
+      "x-content-type-options": "nosniff",
+      "x-powered-by": "Express",
+    },
+    "responseCode": 200,
+  },
+}
+`;
+
+exports[`ResponseExporter Export to TypeScript Export only body 1`] = `
+Object {
+  "ResponseMock": Object {
+    "completed": false,
+    "id": 1,
+    "title": "delectus aut autem",
+    "userId": 1,
+  },
+}
+`;
+
+exports[`ResponseExporter Export to TypeScript Overwrites mocks when configured 1`] = `
+Object {
+  "ResponseMock": Object {
+    "completed": false,
+    "id": 1,
+    "title": "delectus aut autem",
+    "userId": 1,
+  },
+}
+`;
