@@ -1,4 +1,4 @@
-# mock-turtle
+# mock-turtle-soup
 
 Wrapper for mocking external services with Nock. 
 
@@ -8,7 +8,7 @@ Wrapper for mocking external services with Nock.
 ## Install
 
 ```sh
-$ npm install --save-dev mock-turtle
+$ npm install --save-dev mock-turtle-soup
 ```
 
 ## Example usage
@@ -18,7 +18,7 @@ $ npm install --save-dev mock-turtle
 #### Basic mocking usage
 
 ```
-import { MockTurtle } from 'mock-turtle'
+import { MockTurtle } from 'mock-turtle-soup'
 import nock from 'nock'
 
 describe('TestSuite', () => {
@@ -115,7 +115,7 @@ EndpointOptions parameters:
 #### Basic mock generation usage
 
 ```
-import { ResponseTypescriptExporter } from 'mock-turtle'
+import { ResponseTypescriptExporter } from 'mock-turtle-soup'
 
 const exporter = new ResponseTypescriptExporter(__dirname + '/nock-responses')
 
