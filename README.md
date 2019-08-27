@@ -139,9 +139,9 @@ describe('ResponseExporter', () => {
 })
 ```
 
-[npm-image]: https://img.shields.io/npm/v/mock-turtle.svg
-[npm-url]: https://npmjs.org/package/mock-turtle
-[downloads-image]: https://img.shields.io/npm/dm/mock-turtle.svg
-[downloads-url]: https://npmjs.org/package/mock-turtle
-[travis-image]: https://img.shields.io/travis/kibertoad/mock-turtle/master.svg?label=linux
-[travis-url]: https://travis-ci.org/kibertoad/mock-turtle
+[npm-image]: https://img.shields.io/npm/v/mock-turtle-soup.svg
+[npm-url]: https://npmjs.org/package/mock-turtle-soup
+[downloads-image]: https://img.shields.io/npm/dm/mock-turtle-soup.svg
+[downloads-url]: https://npmjs.org/package/mock-turtle-soup
+[travis-image]: https://img.shields.io/travis/kibertoad/mock-turtle-soup/master.svg?label=linux
+[travis-url]: https://travis-ci.org/kibertoad/mock-turtle-soup
