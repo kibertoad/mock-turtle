@@ -60,7 +60,7 @@ export class MockTurtle {
     mockedResponse?: EndpointResponse,
     endpointOptions?: EndpointOptions,
     optionOverrides?: GlobalOptions
-  ) {
+  ): nockNamespace.Interceptor {
     return this.mockEndpoint(
       HttpMethod.get,
       endpointPath,
@@ -75,7 +75,7 @@ export class MockTurtle {
     mockedResponse?: EndpointResponse,
     endpointOptions?: EndpointOptions,
     optionOverrides?: GlobalOptions
-  ) {
+  ): nockNamespace.Interceptor {
     return this.mockEndpoint(
       HttpMethod.post,
       endpointPath,
